@@ -1,4 +1,7 @@
 module.exports = function(config){
+    
+    const pkce = require('../helpers/pkce');
+
     function redirect (req, res){
         // Generate and store the PKCE verifier
         req.session.verifier = pkce.generateVerifier();
