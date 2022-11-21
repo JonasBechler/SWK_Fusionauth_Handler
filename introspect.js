@@ -1,4 +1,6 @@
 module.exports = function(config){
+    const request = require('request');
+
     return function introspect (token, callback){
         request(
             // POST request to /introspect endpoint
