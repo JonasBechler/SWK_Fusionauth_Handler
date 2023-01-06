@@ -1,4 +1,4 @@
-module.exports = function(config){
+module.exports = function(config) {
 	
 	const pkce = require('../helpers/pkce');
 
@@ -49,5 +49,6 @@ module.exports = function(config){
 
 	return {
 		redirect: redirect,
-		callback: callback}
+		callback: callback
+	}
 }
