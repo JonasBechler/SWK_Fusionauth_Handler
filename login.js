@@ -18,7 +18,7 @@ module.exports = function(config) {
 		// Redirect the user to log in via FusionAuth
 		const ip = `${config.device_ip}`
 		const fa_port = `${config.fusionauth_port}`
-		const port = `${config.fusionauth_port}`
+		const port = `${config.port}`
 		const redirect_uri = `${ip}:${fa_port}/oauth2/authorize?client_id=${config.fusionauth.client_id}&redirect_uri=${ip}:${port}/kn/login_callback&response_type=code&code_challenge=${challenge}&code_challenge_method=S256`
 		res.redirect(redirect_uri);
 	}
