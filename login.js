@@ -22,13 +22,15 @@ function login_redirect (req, res){
 	const ip = `${config.device_ip}`
 	const fa_port = `${config.fusionauth_port}`
 	const port = `${config.port}`
+
+	const url 					= `${ip}:${fa_port}/oauth2/authorize?`
+	const client_id 			= `client_id=${config.fusionauth.client_id}&`
+	const callback_uri 			= `redirect_uri=${ip}:${port}/kn/login_callback&`
+	const response_type 		= `response_type=code&`
+	const code_challenge 		= `code_challenge=${challenge}&`
+	const challenge_method 		= `code_challenge_method=S256`
   
-	const redirect_uri = `${ip}:${fa_port}/oauth2/authorize?
-	client_id=${config.fusionauth.client_id}&
-	redirect_uri=${ip}:${port}/kn/login_callback&
-	response_type=code&
-	code_challenge=${challenge}&
-	code_challenge_method=S256`
+	const redirect_uri = url + client_id + callback_uri + response_type + code_challenge + challenge_method
   
 	res.redirect(redirect_uri);
 }
