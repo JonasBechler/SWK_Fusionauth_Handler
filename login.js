@@ -69,7 +69,7 @@ function login_callback (req, res){
 		req.session.token = data.access_token;
 			
 		// redirect to "/"
-		res.redirect(`${config.device_ip}:${config.port_react}/`);
+		res.redirect(`${config.device_ip}:${config.port}/`);
 	})
 }
 // ####################################################################################################################
