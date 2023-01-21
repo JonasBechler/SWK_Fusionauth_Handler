@@ -44,7 +44,7 @@ function login_redirect (req, res){
 // Recieve an authorization code 
 // and exchange this authorization code for an token
 
-function login_callback (req, res){
+function login_callback (req, res){	 
 	requestPromise(
 		// POST request to /token endpoint
 		{
@@ -71,6 +71,10 @@ function login_callback (req, res){
 		// redirect to "/"
 		res.redirect(`${config.device_ip}:${config.port}/`);
 	})
+	.catch(error => {
+		// Should not happen, debugger attach point 
+		console.log(error);
+	}); 
 }
 // ####################################################################################################################
 
