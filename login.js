@@ -12,6 +12,9 @@ module.exports = function(config) {
 // Start login and redirect the user to log in via FusionAuth
 
 function login_redirect (req, res){
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
+	const callback_address = `${config.device_ip}:${config.port}}`
+
 	// Generate and store the PKCE verifier
 	req.session.verifier = pkce.generateVerifier();
 
@@ -19,13 +22,9 @@ function login_redirect (req, res){
 	const challenge = pkce.generateChallenge(req.session.verifier);
 
 	// Redirect the user to log in via FusionAuth
-	const ip = `${config.device_ip}`
-	const fa_port = `${config.fusionauth_port}`
-	const port = `${config.port}`
-
-	const url 					= `${ip}:${fa_port}/oauth2/authorize?`
+	const url 					= `${fa_address}/oauth2/authorize?`
 	const client_id 			= `client_id=${config.fusionauth.client_id}&`
-	const callback_uri 			= `redirect_uri=${ip}:${port}/kn/login_callback&`
+	const callback_uri 			= `redirect_uri=${callback_address}/kn/login_callback&`
 	const response_type 		= `response_type=code&`
 	const code_challenge 		= `code_challenge=${challenge}&`
 	const challenge_method 		= `code_challenge_method=S256`
@@ -41,26 +40,33 @@ function login_redirect (req, res){
 // Part of Report
 // ####################################################################################################################
 
-// Recieve an authorization code 
+// Receive an authorisation code
 // and exchange this authorization code for an token
 
 function login_callback (req, res){	 
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
+	const callback_address = `${config.device_ip}:${config.port}}`
+
 	requestPromise(
 		// POST request to /token endpoint
 		{
 			method: 'POST',
-			uri: `${config.device_ip}:${config.fusionauth_port}/oauth2/token`,
+			uri: `${fa_address}/oauth2/token`,
 			form: {
 			'client_id': config.fusionauth.client_id,
 			'client_secret': config.fusionauth.client_secret,
 			'code': req.query.code,
 			'code_verifier': req.session.verifier,
 			'grant_type': 'authorization_code',
-			'redirect_uri': `${config.device_ip}:${config.port}/kn/login_callback`
+			'redirect_uri': `${callback_address}/kn/login_callback`
 			}
 		}
 	)
 	.then(response => {
+		// Error handling
+		if (!response.ok) {
+			throw new Error('Request failed: ' + response.status);
+		}
 		// Return response as object
 		return JSON.parse(response.body);
 	})
@@ -68,7 +74,7 @@ function login_callback (req, res){
 		// Save token to session
 		req.session.token = data.access_token;
 			
-		// redirect to "/"
+		// Redirect to "/"
 		res.redirect(`${config.device_ip}:${config.port}/`);
 	})
 	.catch(error => {
@@ -76,6 +82,7 @@ function login_callback (req, res){
 		console.log(error);
 	}); 
 }
+
 // ####################################################################################################################
 
 

@@ -11,11 +11,13 @@ module.exports = function(config){
 // Send token to FusionAuth and return response
 
 function introspect (token){
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
+
 	return requestPromise(
 		// POST request to /introspect endpoint 
 		{
 			method: 'POST',
-			uri: `${config.device_ip}:${config.fusionauth_port}/oauth2/introspect`,
+			uri: `${fa_address}/oauth2/introspect`,
 			form: {
 				'client_id': config.fusionauth.client_id,
 				'token': token
@@ -23,10 +25,19 @@ function introspect (token){
 		}
 	)
 	.then(response => {
+		// Error handling
+		if (!response.ok) {
+			throw new Error('Request failed: ' + response.status);
+		}
 		// Return response as object
 		return JSON.parse(response.body);
 	})
+	.catch(error => {
+		// Should not happen, debugger attach point 
+		console.log(error);
+	}); 
 }
+
 // ####################################################################################################################
 
 
