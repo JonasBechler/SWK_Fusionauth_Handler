@@ -11,7 +11,7 @@ module.exports = function(config){
 // Send token to FusionAuth and return response
 
 function introspect (token){
-	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}`
 
 	return requestPromise(
 		// POST request to /introspect endpoint 
@@ -26,7 +26,7 @@ function introspect (token){
 	)
 	.then(response => {
 		// Error handling
-		if (!response.ok) {
+		if (!response.statusCode == 200) {
 			throw new Error('Request failed: ' + response.status);
 		}
 		// Return response as object

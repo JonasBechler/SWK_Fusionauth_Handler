@@ -12,8 +12,8 @@ module.exports = function(config) {
 // Start login and redirect the user to log in via FusionAuth
 
 function login_redirect (req, res){
-	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
-	const callback_address = `${config.device_ip}:${config.port}}`
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}`
+	const callback_address = `${config.device_ip}:${config.port}`
 
 	// Generate and store the PKCE verifier
 	req.session.verifier = pkce.generateVerifier();
@@ -44,8 +44,8 @@ function login_redirect (req, res){
 // and exchange this authorization code for an token
 
 function login_callback (req, res){	 
-	const fa_address = `${config.device_ip}:${config.fusionauth_port}}`
-	const callback_address = `${config.device_ip}:${config.port}}`
+	const fa_address = `${config.device_ip}:${config.fusionauth_port}`
+	const callback_address = `${config.device_ip}:${config.port}`
 
 	requestPromise(
 		// POST request to /token endpoint
@@ -64,7 +64,7 @@ function login_callback (req, res){
 	)
 	.then(response => {
 		// Error handling
-		if (!response.ok) {
+		if (!response.statusCode == 200) {
 			throw new Error('Request failed: ' + response.status);
 		}
 		// Return response as object
